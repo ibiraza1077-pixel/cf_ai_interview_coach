@@ -1,0 +1,11 @@
+name = "cf-ai-interview-coach"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[ai]
+binding = "AI"
+
+[[kv_namespaces]]
+binding = "CONVERSATIONS"
+id = "41ca8bf595164ed7b63a44f9b0ad83a3"
+preview_id = "fe3b2cb87d6e44a48eb157e47fc5dc35"
