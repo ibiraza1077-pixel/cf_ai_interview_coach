@@ -209,17 +209,16 @@ function App() {
             <div className="space-y-4">
               <h1 className="text-5xl md:text-7xl font-bold leading-tight">
                 <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  Nail Every Interview Question.
+                  Practice Technical Interviews.
                 </span>
                 <br />
                 <span className="text-white">
-                  Land Every Job Offer.
+                  Get AI-Powered Feedback.
                 </span>
               </h1>
               
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                AI-powered platform streamlines your interview preparation with realistic mock interviews, 
-                personalized feedback, and adaptive question difficulty.
+                Practice software engineering interviews with an AI coach that asks questions, follows your answers, and offers feedback.
               </p>
             </div>
 
