@@ -48,9 +48,9 @@ export default {
 
     if (url.pathname === '/api/chat' && request.method === 'POST') {
       try {
-        const { message, sessionId } = await request.json() as { message: string; sessionId: string };
+        const { message, sessionId } = (await request.json() || {}) as { message?: unknown; sessionId?: unknown };
 
-        if (!message || !sessionId) {
+        if (typeof message !== 'string' || !message.trim() || message.length > 8000 || typeof sessionId !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(sessionId)) {
           return new Response(JSON.stringify({ error: 'Message and sessionId required' }), {
             status: 400,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -60,8 +60,9 @@ export default {
         const historyKey = `conversation:${sessionId}`;
         const existingHistory = await env.CONVERSATIONS.get(historyKey, 'json') as ConversationHistory | null;
 
-        const messages: Message[] = existingHistory?.messages || [
-          { role: 'system', content: SYSTEM_PROMPT }
+        const messages: Message[] = [
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...(existingHistory?.messages || []).filter(m => m.role !== 'system').slice(-18),
         ];
 
         messages.push({ role: 'user', content: message });
@@ -77,7 +78,7 @@ export default {
         messages.push({ role: 'assistant', content: assistantMessage });
 
         const updatedHistory: ConversationHistory = {
-          messages: messages.slice(-20),
+          messages: [messages[0], ...messages.slice(1).slice(-20)],
           createdAt: existingHistory?.createdAt || new Date().toISOString(),
           lastUpdated: new Date().toISOString(),
         };
@@ -94,9 +95,9 @@ export default {
         });
 
       } catch (error: any) {
-        console.error('Error:', error);
-        return new Response(JSON.stringify({ error: error.message || 'Internal server error' }), {
-          status: 500,
+        if (!(error instanceof SyntaxError)) console.error('Chat request failed');
+        return new Response(JSON.stringify({ error: error instanceof SyntaxError ? 'Invalid JSON' : 'Internal server error' }), {
+          status: error instanceof SyntaxError ? 400 : 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
@@ -104,8 +105,11 @@ export default {
 
     if (url.pathname === '/api/reset' && request.method === 'POST') {
       try {
-        const { sessionId } = await request.json() as { sessionId: string };
+        const { sessionId } = (await request.json() || {}) as { sessionId?: unknown };
         
+        if (typeof sessionId !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(sessionId)) {
+          return new Response(JSON.stringify({ error: 'Valid sessionId required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        }
         if (sessionId) {
           await env.CONVERSATIONS.delete(`conversation:${sessionId}`);
         }
@@ -114,8 +118,8 @@ export default {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       } catch (error: any) {
-        return new Response(JSON.stringify({ error: error.message }), {
-          status: 500,
+        return new Response(JSON.stringify({ error: error instanceof SyntaxError ? 'Invalid JSON' : 'Internal server error' }), {
+          status: error instanceof SyntaxError ? 400 : 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }

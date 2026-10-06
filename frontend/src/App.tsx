@@ -18,7 +18,7 @@ function App() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const newSessionId = crypto.randomUUID();
     setSessionId(newSessionId);
   }, []);
 
@@ -99,7 +99,7 @@ function App() {
         body: JSON.stringify({ sessionId }),
       });
 
-      const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      const newSessionId = crypto.randomUUID();
       setSessionId(newSessionId);
 
       setMessages([{
@@ -244,16 +244,16 @@ function App() {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-8 pt-16 max-w-3xl mx-auto">
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">10K+</div>
-                <div className="text-sm text-gray-400 mt-2">Practice Sessions</div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Role-based</div>
+                <div className="text-sm text-gray-400 mt-2">Practice questions</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">95%</div>
-                <div className="text-sm text-gray-400 mt-2">Success Rate</div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Feedback</div>
+                <div className="text-sm text-gray-400 mt-2">After each answer</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text text-transparent">24/7</div>
-                <div className="text-sm text-gray-400 mt-2">AI Availability</div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text text-transparent">AI-assisted</div>
+                <div className="text-sm text-gray-400 mt-2">Interview practice</div>
               </div>
             </div>
           </div>
@@ -285,6 +285,7 @@ function App() {
                 </div>
                 <button
                   onClick={resetConversation}
+                  disabled={loading}
                   className="group relative px-5 py-2.5 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg font-medium shadow-lg hover:shadow-red-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <span className="relative z-10 flex items-center">
