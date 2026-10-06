@@ -1,5 +1,7 @@
 # AI Interview Coach
 
+A portfolio project by Ibrahim, a final-year Computer Science student seeking internship opportunities. This project explores AI service integration, serverless APIs and conversation state.
+
 A mock technical interview application with a React/TypeScript frontend and a Cloudflare Worker using Workers AI. Conversation context is stored in Workers KV with a 24-hour expiry.
 
 ## Architecture
