@@ -21,6 +21,7 @@ Use Node.js 22.12+ and the repository-local Wrangler CLI.
 npm ci
 npm --prefix frontend ci
 cp frontend/.env.example frontend/.env
+npm run build
 npm run dev
 ```
 
@@ -53,7 +54,9 @@ Chat returns `response` and `sessionId`. History expires 24 hours after its last
 
 ## Deploy
 
-Run `npm run deploy` from the root only when ready to publish the Worker. Set `VITE_API_URL` to its URL before building `frontend/`. Serve `frontend/dist` using Cloudflare Pages or another static host. Build configuration should point to `frontend/` for the frontend, not the Worker root.
+Run `npm run deploy` from the root when ready to publish. It builds the frontend and deploys it together with the API on the same Worker. The production UI uses its own origin by default, while Vite development uses `http://localhost:8787`. Leave `VITE_API_URL` unset for the combined deployment; set it only when deliberately hosting the frontend separately. Wrangler routes `/api/*` and `/health` to the Worker and serves the UI from `frontend/dist`.
+
+For Cloudflare Git builds, use repository root `/`, production branch `main`, build command `npm ci && npm --prefix frontend ci && npm run type-check && npm test && npm run build`, and deploy command `npx wrangler deploy`. Disable preview builds unless you configure separate preview AI/KV resources. Keep the Workers plan Free to cap costs at £0: the free AI allowance is 10,000 neurons per day and requests fail after the allowance is exhausted. See [Cloudflare's quota and pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/).
 
 ## Limitations
 

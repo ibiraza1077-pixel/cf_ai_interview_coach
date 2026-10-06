@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "build": "npm --prefix frontend run build",
+    "deploy": "npm run build && wrangler deploy",
     "type-check": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts"
   },
