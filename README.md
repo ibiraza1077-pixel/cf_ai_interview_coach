@@ -56,7 +56,7 @@ Chat returns `response` and `sessionId`. History expires 24 hours after its last
 
 Run `npm run deploy` from the root when ready to publish. It builds the frontend and deploys it together with the API on the same Worker. The production UI uses its own origin by default, while Vite development uses `http://localhost:8787`. Leave `VITE_API_URL` unset for the combined deployment; set it only when deliberately hosting the frontend separately. Wrangler routes `/api/*` and `/health` to the Worker and serves the UI from `frontend/dist`.
 
-For Cloudflare Git builds, use repository root `/`, production branch `main`, build command `npm ci && npm --prefix frontend ci && npm run type-check && npm test && npm run build`, and deploy command `npx wrangler deploy`. Disable preview builds unless you configure separate preview AI/KV resources. Keep the Workers plan Free to cap costs at £0: the free AI allowance is 10,000 neurons per day and requests fail after the allowance is exhausted. See [Cloudflare's quota and pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/).
+GitHub Actions deploys changes to `main` after running tests and the build. Store a limited Cloudflare deployment token as the repository Actions secret `CLOUDFLARE_API_TOKEN`; `.github/workflows/deploy.yml` identifies the original account. Forks must update the account and KV namespace IDs before deployment. The workflow can also be run manually. It never deploys pull requests. Keep the Workers plan Free to cap costs at £0: the free AI allowance is 10,000 neurons per day and requests fail after the allowance is exhausted. See [Cloudflare's quota and pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/).
 
 ## Limitations
 
